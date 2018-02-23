@@ -1,5 +1,7 @@
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PaymentContext.Domain.Entities;
+using PaymentContext.Domain.Enums;
 using PaymentContext.Domain.ValueObjects;
 
 namespace PaymentsContext.Tests.Entities
@@ -7,11 +9,51 @@ namespace PaymentsContext.Tests.Entities
     [TestClass]
     public class StudentTests
     {
-        [TestMethod]
-        public void TestMethod1()
+        private readonly Name _name;
+        private readonly Document _document;
+        private readonly Email _email;
+        private readonly Address _address; 
+        private readonly Student _student;
+        private readonly Subscription _subscription;
+
+        public StudentTests()
         {
-           var name = new Name("Teste","Teste");
-           //name.Notifications("","");
+            _name = new Name("Bruce","Wayne");
+            _document = new Document("46260337094",EDocumentType.CPF);
+            _email = new Email("test@gmail.com");
+            _address = new Address("Rosinha Sampaio","1670","Jardim Guanabara","Fortaleza","Ceara","Brasil","60000-000");
+            _student = new Student(_name,_document,_email);
+            _subscription = new Subscription(null); 
+        } 
+
+        [TestMethod]
+        public void ShoulReturnErrorWhenHadActiveSubscription()
+        {
+             var payment = new PayPalPayment("12345678",DateTime.Now,DateTime.Now.AddDays(5),10,10,"Wayne Corp",_document,_address,_email);
+            _subscription.AddPayment(payment);
+            _student.AddSubscription(_subscription);
+            _student.AddSubscription(_subscription);
+
+            Assert.IsTrue(_student.Invalid);
+        }
+
+         [TestMethod]
+        public void ShoulReturnErrorWhenHadSubscriptionHasNoPayment()
+        {
+            _student.AddSubscription(_subscription);
+
+            Assert.IsTrue(_student.Invalid);
+        }
+
+        [TestMethod]
+        public void ShoulReturnSuccessWhenHadNoActiveSubscription()
+        {
+            var payment = new PayPalPayment("12345678",DateTime.Now,DateTime.Now.AddDays(5),10,10,"Wayne Corp",_document,_address,_email);
+
+            _subscription.AddPayment(payment);
+            _student.AddSubscription(_subscription);
+
+            Assert.IsTrue(_student.Valid);
         }
     }
 }
