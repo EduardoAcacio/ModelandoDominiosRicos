@@ -31,14 +31,11 @@ namespace PaymentContext.Domain.Commands
         public string Country { get; set; }
         public string ZipCode { get; set; }
 
-        public void Validate()
-        {
-           AddNotifications(new Contract()
+        public void Validate() => AddNotifications(new Contract()
                 .Requires()
-                .HasMinLen(FirstName,3,"Name.FirstName","The name must contain at least 3 characters")
-                .HasMinLen(LastName,3,"Name.LastName","The last name must contain at least 3 characters")
-                .HasMaxLen(FirstName,40,"Name.FirstName","The name must contain a maximum of 40 characters")
+                .HasMinLen(FirstName, 3, "Name.FirstName", "The name must contain at least 3 characters")
+                .HasMinLen(LastName, 3, "Name.LastName", "The last name must contain at least 3 characters")
+                .HasMaxLen(FirstName, 40, "Name.FirstName", "The name must contain a maximum of 40 characters")
             );
-        }
     }
 }
