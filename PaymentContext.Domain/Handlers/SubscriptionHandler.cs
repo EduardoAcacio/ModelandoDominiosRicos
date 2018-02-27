@@ -1,13 +1,13 @@
+using System;
 using Flunt.Notifications;
+using Flunt.Validations;
 using PaymentContext.Domain.Commands;
 using PaymentContext.Shared.Commands;
 using PaymentContext.Shared.Handlers;
 using PaymentContext.Domain.Repositories;
-using Flunt.Validations;
 using PaymentContext.Domain.ValueObjects;
 using PaymentContext.Domain.Enums;
 using PaymentContext.Domain.Entities;
-using System;
 using PaymentContext.Domain.Services;
 
 namespace PaymentContext.Domain.Handlers
@@ -74,6 +74,10 @@ namespace PaymentContext.Domain.Handlers
 
             //Agrupar as validadções
             AddNotifications(name,document,email,student,subscription, payment);
+            
+            //Checar as notificações
+            if(Invalid)
+                return new CommandResult(false,"Your signature could not be signed");
 
             //Salvar as informações
             _repository.CreateSubscription(student);
